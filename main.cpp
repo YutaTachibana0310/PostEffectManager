@@ -435,15 +435,16 @@ void Update(void)
 	// “ü—ÍXV
 	UpdateDebugWindow();
 	UpdateInput();
-
 	UpdateLight();
-
 	UpdateCamera();
 
+	CountDebugTimer("Main", "UpdateModel");
 	UpdateModelController();
+	CountDebugTimer("Main", "UpdateModel");
 
+	CountDebugTimer("Main", "UpdatePostEffect");
 	PostEffectManager::Instance()->Update();
-
+	CountDebugTimer("Main", "UpdatePostEffect");
 }
 
 //=============================================================================
@@ -453,6 +454,7 @@ void Draw(void)
 {
 	if (SUCCEEDED(g_pD3DDevice->BeginScene()))
 	{
+		CountDebugTimer("Main", "DrawSetting");
 		D3DVIEWPORT9 oldViewPort;
 		g_pD3DDevice->GetViewport(&oldViewPort);
 		g_pD3DDevice->SetViewport(&viewPort);
@@ -463,14 +465,18 @@ void Draw(void)
 		g_pD3DDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), backColor, 1.0f, 0);
 
 		SetCamera();
+		CountDebugTimer("Main", "DrawSetting");
 
+		CountDebugTimer("Main", "DrawModel");
 		DrawModelController();
+		CountDebugTimer("Main", "DrawModel");
 
-		DrawDebugWindowMain();
 
-		g_pD3DDevice->SetTexture(0, texture);
+		CountDebugTimer("Main", "DrawPostEffect");
 		PostEffectManager::Instance()->Draw();
+		CountDebugTimer("Main", "DrawPostEffect");
 
+		CountDebugTimer("Main", "DrawBackBuffer");
 		g_pD3DDevice->SetViewport(&oldViewPort);
 		g_pD3DDevice->SetRenderTarget(0, oldSuf);
 		SAFE_RELEASE(oldSuf);
@@ -479,8 +485,9 @@ void Draw(void)
 		g_pD3DDevice->SetStreamSource(0, vtxBuff, 0, sizeof(VERTEX_2D));
 		g_pD3DDevice->SetFVF(FVF_VERTEX_2D);
 		g_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);
+		CountDebugTimer("Main", "DrawBackBuffer");
 
-
+		DrawDebugWindowMain();
 		DrawDebugTimer("Main");
 
 		DrawDebugWindow();
@@ -563,9 +570,7 @@ void SetBackColor(D3DXCOLOR color)
 //=============================================================================
 void DrawDebugWindowMain(void)
 {
-	BeginDebugWindow("Main");
-	DebugDrawTexture(texture, 500.0f, 300.0f);
-	EndDebugWindow("Main");
+
 }
 
 //=============================================================================
