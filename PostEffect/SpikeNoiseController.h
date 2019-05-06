@@ -40,6 +40,9 @@ private:
 	~SpikeNoiseController();
 
 	SpikeNoise *spikeNoise;
+	LPDIRECT3DTEXTURE9 texture;
+	LPDIRECT3DSURFACE9 surface;
+
 	bool drawFlag;
 
 	bool active;

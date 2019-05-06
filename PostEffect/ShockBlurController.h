@@ -40,6 +40,8 @@ private:
 	~ShockBlurController();
 
 	ShockBlur *shockBlur;
+	LPDIRECT3DTEXTURE9 texture;
+	LPDIRECT3DSURFACE9 surface;
 
 	bool active;
 	bool drawFlag;

@@ -32,7 +32,7 @@ void ShockBlurController::Update()
 #ifdef SHOCKBLURCTRL_USE_DEBUG
 	BeginDebugWindow("ShockBlurCtrl");
 	if (DebugButton("Set"))
-		SetBlur(D3DXVECTOR3(0.0f, 0.0f, 200.0f), 5.0f, 30);
+		SetBlur(D3DXVECTOR3(0.0f, 0.0f, 200.0f), 50.0f, 30);
 	EndDebugWindow("ShockBlurCtrl");
 #endif // SHOCKBLURCTRL_USE_DEBUG
 
@@ -48,7 +48,7 @@ void ShockBlurController::Update()
 	//ブラーの強さをアニメーション
 	int effectDuration = state == State::Wait ? effectTime : Duration;
 	float t = (float)cntFrame / (float)effectDuration;
-	float power = GetEasingValue(t, srcPower, destPower, (EasingType)EaseType[state]);
+	float power = Easing<float>::GetEasingValue(t, &srcPower, &destPower, (EasingType)EaseType[state]);
 	shockBlur->SetPower(power);
 
 	//状態遷移
@@ -93,16 +93,28 @@ void ShockBlurController::Draw()
 		return;
 
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	pDevice->SetTexture(0, GetCurrentDrawData());
+
+	LPDIRECT3DSURFACE9 oldSuf;
+	pDevice->GetRenderTarget(0, &oldSuf);
+	pDevice->SetRenderTarget(0, surface);
+	pDevice->Clear(0, 0, D3DCLEAR_TARGET, 0, 0, 0);
 
 	pDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
 	pDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, false);
 
+	pDevice->SetTexture(0, GetCurrentDrawData());
+	shockBlur->DrawEffect();
+
+	pDevice->SetRenderTarget(0, oldSuf);
+	SAFE_RELEASE(oldSuf);
+
+	pDevice->SetTexture(0, texture);
 	shockBlur->Draw();
 
 	pDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
 	pDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-
+	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, true);
 }
 
 /**************************************
@@ -131,6 +143,10 @@ ShockBlurController::ShockBlurController()
 {
 	shockBlur = new ShockBlur();
 	shockBlur->SetSurfaceSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	pDevice->CreateTexture(SCREEN_WIDTH, SCREEN_HEIGHT, 1, D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &texture, 0);
+	texture->GetSurfaceLevel(0, &surface);
 }
 
 /**************************************
@@ -139,4 +155,6 @@ ShockBlurController::ShockBlurController()
 ShockBlurController::~ShockBlurController()
 {
 	delete shockBlur;
+	SAFE_RELEASE(texture);
+	SAFE_RELEASE(surface);
 }

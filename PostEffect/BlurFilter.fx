@@ -1,14 +1,21 @@
 float texelU[5];	//X方向の隣のテクセル位置
 float texelV[5];	//Y方向の隣のテクセル位置
+int blurPower;		//ブラーの強さ
 
-sampler s0 : register(s);
+sampler s0 : register(s);	//テクスチャサンプラー
 
+/*********************************
+頂点シェーダ出力構造体
+*********************************/
 struct VS_OUTPUT
 {
 	float4 pos	: POSITION;
 	float2 tex	: TEXCOORD0;
 };
 
+/*********************************
+頂点シェーダ
+*********************************/
 VS_OUTPUT VS(
 	float4 pos	: POSITION,
 	float2 tex : TEXCOORD0
@@ -21,7 +28,9 @@ VS_OUTPUT VS(
 	return Out;
 }
 
-//X方向にぼかす
+/*********************************
+//X方向にぼかすピクセルシェーダ(弱)
+*********************************/
 float4 PS1(VS_OUTPUT In) : COLOR0
 {
 	//テクセルを取得
@@ -55,7 +64,9 @@ float4 PS1(VS_OUTPUT In) : COLOR0
 	return p0 + p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9 + p10;
 }
 
-//Y方向にぼかす
+/*********************************
+//Y方向にぼかすピクセルシェーダ(弱)
+*********************************/
 float4 PS2(VS_OUTPUT In) : COLOR0
 {
 	//テクセルを取得
@@ -89,6 +100,9 @@ float4 PS2(VS_OUTPUT In) : COLOR0
 	return p0 + p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9 + p10;
 }
 
+/*********************************
+テクニック
+*********************************/
 technique tech
 {
 	pass P0

@@ -114,6 +114,15 @@
     <ClCompile Include="PostEffect\ShockBlurController.cpp">
       <Filter>ソース ファイル\PostEffect\Controller</Filter>
     </ClCompile>
+    <ClCompile Include="PostEffect\BloomFilter.cpp">
+      <Filter>ソース ファイル\PostEffect\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="PostEffect\BloomController.cpp">
+      <Filter>ソース ファイル\PostEffect\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="PostEffect\StrongBlurFilter.cpp">
+      <Filter>ソース ファイル\PostEffect\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -197,6 +206,15 @@
     <ClInclude Include="PostEffect\ShockBlurController.h">
       <Filter>ヘッダー ファイル\PostEffect\Controller</Filter>
     </ClInclude>
+    <ClInclude Include="PostEffect\BloomFilter.h">
+      <Filter>ヘッダー ファイル\PostEffect\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="PostEffect\BloomController.h">
+      <Filter>ヘッダー ファイル\PostEffect\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="PostEffect\StrongBlurFilter.h">
+      <Filter>ヘッダー ファイル\PostEffect\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PostEffect\MonotoneFilter.fx">
@@ -209,6 +227,12 @@
       <Filter>リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="PostEffect\ShockBlur.fx">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="PostEffect\BloomFilter.fx">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="PostEffect\StrongBlurFilter.fx">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>

@@ -8,6 +8,7 @@
 
 #include "PostEffect\/SpikeNoiseController.h"
 #include "PostEffect\ShockBlurController.h"
+#include "PostEffect\BloomController.h"
 
 /**************************************
 ƒ}ƒNƒ’è‹`
@@ -63,6 +64,7 @@ void PostEffectManager::Update()
 {
 	SpikeNoiseController::Instance()->Update();
 	ShockBlurController::Instance()->Update();
+	BloomController::Instance()->Update();
 }
 
 /**************************************
@@ -70,7 +72,7 @@ void PostEffectManager::Update()
 ***************************************/
 void PostEffectManager::Draw()
 {
-
 	SpikeNoiseController::Instance()->Draw();
 	ShockBlurController::Instance()->Draw();
+	BloomController::Instance()->Draw();
 }

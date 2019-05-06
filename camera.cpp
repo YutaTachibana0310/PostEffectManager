@@ -1,7 +1,7 @@
 //=============================================================================
 //
 // ÉJÉÅÉâèàóù [camera.cpp]
-// Author : GP11A341 21 óßâ‘óYëæ
+// Author : GP12B332 21 óßâ‘óYëæ
 //
 //=============================================================================
 #include "camera.h"
@@ -46,7 +46,7 @@ HRESULT InitCamera(void)
 	camera.up = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	camera.destPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	camera.destTarget = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	camera.rot = D3DXVECTOR3(0.0f, -1.378f, 0.0f);
+	camera.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	camera.dist = CAMERA_DIST_INITVAL;
 
 	SetCamera();
@@ -74,8 +74,8 @@ void UpdateCamera(void)
 	camera.rot.y += D3DXToRadian(CAMERA_ROTVALUE_Y * x);
 	camera.dist -= y * CAMERA_DIST_MOVEVAL;
 
-	camera.pos.x = cosf(camera.rot.y) * camera.dist;
-	camera.pos.z = sinf(camera.rot.y) * camera.dist;
+	camera.pos.x = sinf(camera.rot.y) * camera.dist;
+	camera.pos.z = -cosf(camera.rot.y) * camera.dist;
 
 	BeginDebugWindow("Camera");
 

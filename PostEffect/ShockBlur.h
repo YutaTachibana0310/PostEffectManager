@@ -17,13 +17,12 @@
 /**************************************
 ƒNƒ‰ƒX’è‹`
 ***************************************/
-class ShockBlur : ScreenObject
+class ShockBlur : public ScreenObject
 {
 public:
 	ShockBlur();
 	~ShockBlur();
-	static void Destroy();
-	void Draw();
+	void DrawEffect();
 	void SetPower(float power);
 	void SetCenterPos(D3DXVECTOR3 pos);
 	void SetSurfaceSize(float widht, float height);

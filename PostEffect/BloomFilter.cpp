@@ -1,19 +1,18 @@
 //=====================================
 //
-//ブラーフィルター処理[BlurFilter.cpp]
+//ブルームフィルター処理[BloomFilter.cpp]
 //Author:GP12B332 21 立花雄太
 //
 //=====================================
-#include "BlurFilter.h"
+#include "BloomFilter.h"
 
 /**************************************
 マクロ定義
 ***************************************/
-#define EFFECTFILE_BLUR_PATH	"PostEffect/BlurFilter.fx"
-#define BLURFILTER_ARRAY_SIZE	(5)
+#define EFFECTFILE_BLOOMFILTER_PATH	"PostEffect/BloomFilter.fx"
 
 /**************************************
-構造体定義
+クラス定義
 ***************************************/
 
 /**************************************
@@ -23,20 +22,19 @@
 /**************************************
 コンストラクタ
 ***************************************/
-BlurFilter::BlurFilter()
+BloomFilter::BloomFilter()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	D3DXCreateEffectFromFile(pDevice, (LPSTR)EFFECTFILE_BLUR_PATH, 0, 0, 0, 0, &effect, 0);
-	texelU = effect->GetParameterByName(0, "texelU");
-	texelV = effect->GetParameterByName(0, "texelV");
-	effect->SetTechnique("tech");
+	D3DXCreateEffectFromFile(pDevice, (LPSTR)EFFECTFILE_BLOOMFILTER_PATH, 0, 0, 0, 0, &effect, 0);
+	hThrethold = effect->GetParameterByName(0, "threthold");
+	hBloomPower = effect->GetParameterByName(0, "bloomPower");
 }
 
 /**************************************
 デストラクタ
 ***************************************/
-BlurFilter::~BlurFilter()
+BloomFilter::~BloomFilter()
 {
 	SAFE_RELEASE(effect);
 }
@@ -44,10 +42,10 @@ BlurFilter::~BlurFilter()
 /**************************************
 描画処理
 ***************************************/
-void BlurFilter::DrawEffect(UINT pass)
+void BloomFilter::DrawEffect()
 {
 	effect->Begin(0, 0);
-	effect->BeginPass(pass);
+	effect->BeginPass(0);
 
 	ScreenObject::Draw();
 
@@ -56,20 +54,19 @@ void BlurFilter::DrawEffect(UINT pass)
 }
 
 /**************************************
-サーフェイスサイズセット処理
+しきい値設定処理
 ***************************************/
-void BlurFilter::SetSurfaceSize(float width, float height)
+void BloomFilter::SetThrethold(float threthold)
 {
-	float u[BLURFILTER_ARRAY_SIZE], v[BLURFILTER_ARRAY_SIZE];
-	for (int i = 0; i < BLURFILTER_ARRAY_SIZE; i++)
-	{
-		u[i] = 1.0f / width * (i + 1);
-		v[i] = 1.0f / height * (i + 1);
-	}
-
-	effect->SetFloatArray(texelU, u, BLURFILTER_ARRAY_SIZE);
-	effect->SetFloatArray(texelV, v, BLURFILTER_ARRAY_SIZE);
+	effect->SetFloat(hThrethold, threthold);
 	effect->CommitChanges();
+}
 
-	ScreenObject::Resize(width, height);
+/**************************************
+ゲイン設定処理
+***************************************/
+void BloomFilter::SetBloomPower(float power)
+{
+	effect->SetFloat(hBloomPower, power);
+	effect->CommitChanges();
 }

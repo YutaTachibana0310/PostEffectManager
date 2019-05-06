@@ -63,7 +63,7 @@ void SpikeNoiseController::Update()
 	//ノイズの強さをアニメーション
 	int effectTime = state == State::Wait ? this->effectTime : Duration;
 	float t = (float)cntFrame / (float)effectTime;
-	float power = GetEasingValue(t, this->srcPower, this->destPower, (EasingType)EaseType[this->state]);
+	float power = Easing<float>::GetEasingValue(t, &this->srcPower, &this->destPower, (EasingType)EaseType[this->state]);
 	this->spikeNoise->SetLength(power);
 
 	//遷移判定
@@ -110,10 +110,21 @@ void SpikeNoiseController::Draw()
 
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
+	LPDIRECT3DSURFACE9 oldSuf;
+	pDevice->GetRenderTarget(0, &oldSuf);
+	pDevice->SetRenderTarget(0, surface);
+	pDevice->Clear(0, 0, D3DCLEAR_TARGET, 0, 0, 0);
+
 	pDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
 	pDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
 	pDevice->SetTexture(0, GetCurrentDrawData());
+	spikeNoise->DrawEffect();
+
+	pDevice->SetRenderTarget(0, oldSuf);
+	SAFE_RELEASE(oldSuf);
+
+	pDevice->SetTexture(0, texture);
 	spikeNoise->Draw();
 
 	pDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
@@ -127,6 +138,11 @@ SpikeNoiseController::SpikeNoiseController()
 {
 	//スパイクノイズのインスタンスを生成
 	spikeNoise = new SpikeNoise();
+
+	//テクスチャを作成しサーフェイスを取得
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	pDevice->CreateTexture(SCREEN_WIDTH, SCREEN_HEIGHT, 1, D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &texture, 0);
+	texture->GetSurfaceLevel(0, &surface);
 }
 
 /**************************************
@@ -136,4 +152,6 @@ SpikeNoiseController::~SpikeNoiseController()
 {
 	//解放
 	delete spikeNoise;
+	SAFE_RELEASE(texture);
+	SAFE_RELEASE(surface);
 }

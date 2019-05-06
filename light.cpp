@@ -1,7 +1,7 @@
 //=============================================================================
 //
 // ÉâÉCÉgèàóù [light.cpp]
-// Author : GP11A341 21 óßâ‘óYëæ
+// Author : GP12B332 21 óßâ‘óYëæ
 //
 //=============================================================================
 #include "light.h"
@@ -113,6 +113,10 @@ void UpdateLight(void)
 	DebugColorEditor("Ambient2", (float*)&g_aLight[2].Ambient);
 
 	DebugNewLine();
+
+	DebugInputVector3("Dir1", (D3DXVECTOR3*)&g_aLight[0].Direction);
+	DebugInputVector3("Dir2", (D3DXVECTOR3*)&g_aLight[1].Direction);
+	DebugInputVector3("Dir3", (D3DXVECTOR3*)&g_aLight[2].Direction);
 
 	if (DebugButton("Save Settings"))
 	{

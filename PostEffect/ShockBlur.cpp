@@ -40,7 +40,7 @@ ShockBlur::~ShockBlur()
 /**************************************
 •`‰æˆ—
 ***************************************/
-void ShockBlur::Draw()
+void ShockBlur::DrawEffect()
 {
 	effect->Begin(0, 0);
 	effect->BeginPass(0);
@@ -76,8 +76,8 @@ void ShockBlur::SetCenterPos(D3DXVECTOR3 pos)
 
 	D3DXVec3TransformCoord(&center, &pos, &view);
 	D3DXVec3TransformCoord(&center, &center, &projection);
-	pos.x = (pos.x + 1.0f) / 2.0f;
-	pos.y = (pos.y + 1.0f) / 2.0f;
+	center.x = (center.x + 1.0f) / 2.0f;
+	center.y = (-center.y + 1.0f) / 2.0f;
 
 	effect->SetFloatArray(hndlCenter, (float*)&center, 2);
 	effect->CommitChanges();

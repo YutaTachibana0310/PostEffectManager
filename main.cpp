@@ -1,7 +1,7 @@
 //=============================================================================
 //
 // メイン処理 [main.cpp]
-// Author : GP11A341 21 立花雄太
+// Author : GP12B332 21 立花雄太
 //
 //=============================================================================
 #include "main.h"
@@ -47,11 +47,7 @@ static bool flgPause = false;
 
 //現在のシーン
 
-//各ビューポート
-static D3DVIEWPORT9 viewPort[TARGETPLAYER_MAX] = {
-	{0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 1.0f },
-	{SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 1.0f}
-};
+static D3DVIEWPORT9 viewPort;
 
 //デフォルトビューポート
 static D3DVIEWPORT9 defaultViewPort = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 1.0f };
@@ -62,6 +58,10 @@ PostEffectManager* PostEffectManager::instance = NULL;
 //描画用テクスチャ & サーフェイス
 static LPDIRECT3DTEXTURE9 texture;
 static LPDIRECT3DSURFACE9 surface;
+
+//Zマップ用テクスチャ & サーフェイス
+static LPDIRECT3DTEXTURE9 zMapTexture;
+static LPDIRECT3DSURFACE9 zMapSurface;
 
 //スクリーンオブジェクト
 static LPDIRECT3DVERTEXBUFFER9 vtxBuff;
@@ -237,14 +237,14 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// デバイスのプレゼンテーションパラメータの設定
 	ZeroMemory(&d3dpp, sizeof(d3dpp));							// ワークをゼロクリア
-	d3dpp.BackBufferCount = 1;						// バックバッファの数
-	d3dpp.BackBufferWidth = SCREEN_WIDTH;				// ゲーム画面サイズ(幅)
-	d3dpp.BackBufferHeight = SCREEN_HEIGHT;			// ゲーム画面サイズ(高さ)
-	d3dpp.BackBufferFormat = d3ddm.Format;				// カラーモードの指定
-	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;	// 映像信号に同期してフリップする
-	d3dpp.Windowed = bWindow;					// ウィンドウモード
+	d3dpp.BackBufferCount = 1;									// バックバッファの数
+	d3dpp.BackBufferWidth = SCREEN_WIDTH;						// ゲーム画面サイズ(幅)
+	d3dpp.BackBufferHeight = SCREEN_HEIGHT;						// ゲーム画面サイズ(高さ)
+	d3dpp.BackBufferFormat = d3ddm.Format;						// カラーモードの指定
+	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;					// 映像信号に同期してフリップする
+	d3dpp.Windowed = bWindow;									// ウィンドウモード
 	d3dpp.EnableAutoDepthStencil = TRUE;						// デプスバッファ（Ｚバッファ）とステンシルバッファを作成
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;				// デプスバッファとして16bitを使う
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;					// デプスバッファとして16bitを使う
 
 	if (bWindow)
 	{// ウィンドウモード
@@ -311,6 +311,7 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
 
 	g_pD3DDevice->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+	g_pD3DDevice->SetRenderState(D3DRS_SPECULARENABLE, true);
 
 	D3DCAPS9 caps;
 	ZeroMemory(&caps, sizeof(D3DCAPS9));
@@ -326,6 +327,18 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		&texture,
 		0);
 	texture->GetSurfaceLevel(0, &surface);
+
+	//Zマップ作成
+	g_pD3DDevice->CreateTexture(SCREEN_WIDTH,
+		SCREEN_HEIGHT,
+		1,
+		D3DUSAGE_RENDERTARGET,
+		D3DFMT_D16,
+		D3DPOOL_DEFAULT,
+		&zMapTexture,
+		0);
+	zMapTexture->GetSurfaceLevel(0, &zMapSurface);
+	g_pD3DDevice->SetRenderTarget(1, zMapSurface);
 
 	//頂点バッファ作成
 	g_pD3DDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
@@ -359,6 +372,13 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		pVtx[3].diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	vtxBuff->Unlock();
+
+	viewPort.Height = 2048;
+	viewPort.Width = 2048;
+	viewPort.MinZ = 0.0f;
+	viewPort.MaxZ = 1.0f;
+	viewPort.X = 0;
+	viewPort.Y = 0;
 
 	// 入力処理の初期化
 	InitInput(hInstance, hWnd);
@@ -433,6 +453,10 @@ void Draw(void)
 {
 	if (SUCCEEDED(g_pD3DDevice->BeginScene()))
 	{
+		D3DVIEWPORT9 oldViewPort;
+		g_pD3DDevice->GetViewport(&oldViewPort);
+		g_pD3DDevice->SetViewport(&viewPort);
+
 		LPDIRECT3DSURFACE9 oldSuf;
 		g_pD3DDevice->GetRenderTarget(0, &oldSuf);
 		g_pD3DDevice->SetRenderTarget(0, surface);
@@ -442,9 +466,12 @@ void Draw(void)
 
 		DrawModelController();
 
+		DrawDebugWindowMain();
+
 		g_pD3DDevice->SetTexture(0, texture);
 		PostEffectManager::Instance()->Draw();
 
+		g_pD3DDevice->SetViewport(&oldViewPort);
 		g_pD3DDevice->SetRenderTarget(0, oldSuf);
 		SAFE_RELEASE(oldSuf);
 
@@ -453,7 +480,6 @@ void Draw(void)
 		g_pD3DDevice->SetFVF(FVF_VERTEX_2D);
 		g_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);
 
-		DrawDebugWindowMain();
 
 		DrawDebugTimer("Main");
 
@@ -537,7 +563,9 @@ void SetBackColor(D3DXCOLOR color)
 //=============================================================================
 void DrawDebugWindowMain(void)
 {
-
+	BeginDebugWindow("Main");
+	DebugDrawTexture(texture, 500.0f, 300.0f);
+	EndDebugWindow("Main");
 }
 
 //=============================================================================

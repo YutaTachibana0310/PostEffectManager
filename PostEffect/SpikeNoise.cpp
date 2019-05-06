@@ -11,12 +11,6 @@
 ***************************************/
 #define EFFECT_SPIKENOISE_PATH	"PostEffect/SpikeNoise.fx"
 
-//#define SPIKENOISE_USE_DEBUG
-
-#ifdef SPIKENOISE_USE_DEBUG
-#include "../debugWindow.h"
-#endif
-
 /**************************************
 \‘¢‘Ì’è‹`
 ***************************************/
@@ -47,16 +41,8 @@ SpikeNoise::~SpikeNoise()
 /**************************************
 •`‰æˆ—
 ***************************************/
-void SpikeNoise::Draw()
+void SpikeNoise::DrawEffect()
 {
-#ifdef SPIKENOISE_USE_DEBUG
-	BeginDebugWindow("SpikeNoise");
-	static float length = 0.0f;
-	DebugSliderFloat("Length", &length, 0.0f, 1.0f);
-	EndDebugWindow("SpikeNoise");
-	SetLength(length);
-#endif
-
 	effect->Begin(0, 0);
 	effect->BeginPass(0);
 

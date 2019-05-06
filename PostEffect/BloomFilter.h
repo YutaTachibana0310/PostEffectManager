@@ -1,11 +1,11 @@
 //=====================================
 //
-//スパイクノイズヘッダ[SpikeNoiise.h]
+//ブルームフィルターヘッダ[BloomFilter.h]
 //Author:GP12B332 21 立花雄太
 //
 //=====================================
-#ifndef _SPIKENOISE_H_
-#define _SPIKENOISE_H_
+#ifndef _BLOOMFILTER_H_
+#define _BLOOMFILTER_H_
 
 #include "../main.h"
 #include "ScreenObject.h"
@@ -17,18 +17,19 @@
 /**************************************
 クラス定義
 ***************************************/
-class SpikeNoise :public ScreenObject
+class BloomFilter : public ScreenObject
 {
 public:
-	SpikeNoise();
-	~SpikeNoise();
+	BloomFilter();
+	~BloomFilter();
 	void DrawEffect();
-	void SetLength(float length);
+	void SetThrethold(float threthold);
+	void SetBloomPower(float power);
 
 private:
 	LPD3DXEFFECT effect;
-	D3DXHANDLE hndlLength;
+	D3DXHANDLE hThrethold;
+	D3DXHANDLE hBloomPower;
 };
-
 
 #endif
