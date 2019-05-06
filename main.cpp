@@ -329,16 +329,16 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	texture->GetSurfaceLevel(0, &surface);
 
 	//Zマップ作成
-	g_pD3DDevice->CreateTexture(SCREEN_WIDTH,
-		SCREEN_HEIGHT,
-		1,
-		D3DUSAGE_RENDERTARGET,
-		D3DFMT_D16,
-		D3DPOOL_DEFAULT,
-		&zMapTexture,
-		0);
-	zMapTexture->GetSurfaceLevel(0, &zMapSurface);
-	g_pD3DDevice->SetRenderTarget(1, zMapSurface);
+	//g_pD3DDevice->CreateTexture(SCREEN_WIDTH,
+	//	SCREEN_HEIGHT,
+	//	1,
+	//	D3DUSAGE_RENDERTARGET,
+	//	D3DFMT_D16,
+	//	D3DPOOL_DEFAULT,
+	//	&zMapTexture,
+	//	0);
+	//zMapTexture->GetSurfaceLevel(0, &zMapSurface);
+	//g_pD3DDevice->SetRenderTarget(1, zMapSurface);
 
 	//頂点バッファ作成
 	g_pD3DDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,

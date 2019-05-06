@@ -22,7 +22,7 @@ class BloomFilter : public ScreenObject
 public:
 	BloomFilter();
 	~BloomFilter();
-	void DrawEffect();
+	void DrawEffect(UINT pass);
 	void SetThrethold(float threthold);
 	void SetBloomPower(float power);
 

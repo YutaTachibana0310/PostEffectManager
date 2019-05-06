@@ -1,7 +1,26 @@
 float threthold;				//抽出するしきい値
 float bloomPower;				//輝度のゲイン
 
-sampler s0 : register(s0);		//テクスチャサンプラー
+/***************************************
+テクスチャサンプラー
+***************************************/
+sampler s0 : register(s0) = sampler_state{
+	MipFilter = LINEAR;
+	MinFilter = LINEAR;
+	MagFilter = LINEAR;
+};	
+
+sampler s1 : register(s1) = sampler_state {
+	MipFilter = LINEAR;
+	MinFilter = LINEAR;
+	MagFilter = LINEAR;
+};
+
+sampler s2 : register(s2) = sampler_state {
+	MipFilter = LINEAR;
+	MinFilter = LINEAR;
+	MagFilter = LINEAR;
+};
 
 /***************************************
 頂点シェーダ出力構造体
@@ -28,9 +47,9 @@ VS_OUTPUT VS(
 }
 
 /***************************************
-ピクセルシェーダ
+ピクセルシェーダ(輝度抽出用)
 ***************************************/
-float4 PS(VS_OUTPUT In) : COLOR0
+float4 PS1(VS_OUTPUT In) : COLOR0
 {
 	//人の目の輝度の受け取り方を考慮した係数
 	const float3 perception = float3(0.2126f, 0.7152f, 0.0722f);
@@ -47,11 +66,24 @@ float4 PS(VS_OUTPUT In) : COLOR0
 }
 
 /***************************************
+ピクセルシェーダ(加算合成用)
+***************************************/
+float4 PS2(VS_OUTPUT In) : COLOR0
+{
+	return tex2D(s0, In.tex) + tex2D(s1, In.tex) + tex2D(s2, In.tex);
+}
+
+/***************************************
 テクニック
 ***************************************/
 technique tech {
 	pass P0 {
 		VertexShader = compile vs_2_0 VS();
-		PixelShader = compile ps_2_0 PS();
+		PixelShader = compile ps_2_0 PS1();
+	}
+
+	pass P1 {
+		VertexShader = compile vs_2_0 VS();
+		PixelShader = compile ps_2_0 PS2();
 	}
 };

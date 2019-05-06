@@ -42,10 +42,10 @@ BloomFilter::~BloomFilter()
 /**************************************
 •`‰æˆ—
 ***************************************/
-void BloomFilter::DrawEffect()
+void BloomFilter::DrawEffect(UINT pass)
 {
 	effect->Begin(0, 0);
-	effect->BeginPass(0);
+	effect->BeginPass(pass);
 
 	ScreenObject::Draw();
 

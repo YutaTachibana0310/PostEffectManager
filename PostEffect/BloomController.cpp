@@ -163,7 +163,7 @@ void BloomController::SampleBrightness()
 
 		//現在の描画情報から輝度を抽出
 		pDevice->SetTexture(0, GetCurrentDrawData());
-		bloomFilter->DrawEffect();
+		bloomFilter->DrawEffect(0);
 	}
 }
 
@@ -222,14 +222,11 @@ void BloomController::BlendBloom()
 
 	bloomFilter->Resize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	for (int i = 0; i < 3; i++)
-	{
-		//ブルームテクスチャを設定
-		pDevice->SetTexture(0, blurTexture[i][cntBlur % 2]);
+	pDevice->SetTexture(0, blurTexture[0][cntBlur % 2]);
+	pDevice->SetTexture(1, blurTexture[1][cntBlur % 2]);
+	pDevice->SetTexture(2, blurTexture[2][cntBlur % 2]);
 
-		//合成
-		bloomFilter->Draw();
-	}
+	bloomFilter->DrawEffect(1);
 
 	//レンダーステートを元に戻す
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
