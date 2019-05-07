@@ -12,10 +12,6 @@
 ***************************************/
 #define USE_SPIKENOISECTRL_DEBUG
 
-#ifdef USE_SPIKENOISECTRL_DEBUG
-#include "../debugWindow.h"
-#endif
-
 /**************************************
 ç\ë¢ëÃíËã`
 ***************************************/
@@ -45,13 +41,6 @@ void SpikeNoiseController::SetNoise(float power, int effectTime)
 ***************************************/
 void SpikeNoiseController::Update()
 {
-#ifdef USE_SPIKENOISECTRL_DEBUG
-	BeginDebugWindow("SpikeNoiseCtrl");
-	if (DebugButton("Set"))
-		SetNoise(2.0f, 20);
-	EndDebugWindow("SpikeNoiseCtrl");
-#endif
-
 	const int Duration = 10;
 	const int EaseType[State::Max] = {EasingType::InCubic, EasingType::Linear, EasingType::OutCubic};
 

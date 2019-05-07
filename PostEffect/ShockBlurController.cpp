@@ -12,10 +12,6 @@
 ***************************************/
 #define SHOCKBLURCTRL_USE_DEBUG
 
-#ifdef SHOCKBLURCTRL_USE_DEBUG
-#include "../debugWindow.h"
-#endif
-
 /**************************************
 ç\ë¢ëÃíËã`
 ***************************************/
@@ -29,13 +25,6 @@
 ***************************************/
 void ShockBlurController::Update()
 {
-#ifdef SHOCKBLURCTRL_USE_DEBUG
-	BeginDebugWindow("ShockBlurCtrl");
-	if (DebugButton("Set"))
-		SetBlur(D3DXVECTOR3(0.0f, 0.0f, 200.0f), 50.0f, 30);
-	EndDebugWindow("ShockBlurCtrl");
-#endif // SHOCKBLURCTRL_USE_DEBUG
-
 	const int Duration = 10;
 	const int EaseType[State::Max] = { EasingType::InCubic, EasingType::Linear, EasingType::OutCubic };
 

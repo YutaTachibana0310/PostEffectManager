@@ -1,6 +1,6 @@
 //=====================================
 //
-//テンプレートヘッダ[PostEffectManager.h]
+//ポストエフェクトマネージャヘッダ[PostEffectManager.h]
 //Author:GP12B332 21 立花雄太
 //
 //=====================================
@@ -8,7 +8,7 @@
 #define _POSTEFFECTMANAGER_H_
 
 #include "main.h"
-#include "PostEffect\/ScreenObject.h"
+#include "PostEffect\ScreenObject.h"
 
 /**************************************
 マクロ定義
@@ -36,6 +36,8 @@ private:
 	PostEffectManager(PostEffectManager &&) = delete;
 	PostEffectManager& operator=(const PostEffectManager &) = delete;
 	PostEffectManager& operator=(PostEffectManager &&) = delete;
+
+	bool useSceneBloom;
 };
 
 

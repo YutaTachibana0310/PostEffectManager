@@ -76,13 +76,6 @@ void UpdateCamera(void)
 
 	camera.pos.x = sinf(camera.rot.y) * camera.dist;
 	camera.pos.z = -cosf(camera.rot.y) * camera.dist;
-
-	BeginDebugWindow("Camera");
-
-	DebugText("Pos:%f, %f, %f", camera.pos.x, camera.pos.y, camera.pos.z);
-	DebugText("Rot:%f, %f, %f", camera.rot.x, camera.rot.y, camera.rot.z);
-
-	EndDebugWindow("Camera");
 }
 
 //=============================================================================

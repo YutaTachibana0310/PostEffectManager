@@ -13,6 +13,11 @@
 /**************************************
 マクロ定義
 ***************************************/
+#define POSTEFFECT_USE_DEBUG
+
+#ifdef POSTEFFECT_USE_DEBUG
+#include "debugWindow.h"
+#endif // POSTEFFECT_USE_DEBUG
 
 /**************************************
 構造体定義
@@ -62,9 +67,29 @@ PostEffectManager::~PostEffectManager()
 ***************************************/
 void PostEffectManager::Update()
 {
+#ifdef POSTEFFECT_USE_DEBUG
+	BeginDebugWindow("PostEffect");
+
+	//ブルーム使用切り替え
+	DebugChechBox("User Bloom", &useSceneBloom);
+
+	//スパイクノイズセット
+	if(DebugButton("Set SpikeNoise"))
+		SpikeNoiseController::Instance()->SetNoise(2.0f, 20);
+
+	//ショックブラーセット
+	if(DebugButton("Set ShockBlur"))
+		ShockBlurController::Instance()->SetBlur(D3DXVECTOR3(0.0f, 0.0f, 200.0f), 50.0f, 30);
+
+	EndDebugWindow("PostEffect");
+#endif // POSTEFFECT_USE_DEBUG
+
+
 	SpikeNoiseController::Instance()->Update();
 	ShockBlurController::Instance()->Update();
-	BloomController::Instance()->Update();
+
+	if(useSceneBloom)
+		BloomController::Instance()->Update();
 }
 
 /**************************************
@@ -74,5 +99,7 @@ void PostEffectManager::Draw()
 {
 	SpikeNoiseController::Instance()->Draw();
 	ShockBlurController::Instance()->Draw();
-	BloomController::Instance()->Draw();
+
+	if(useSceneBloom)
+		BloomController::Instance()->Draw();
 }

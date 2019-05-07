@@ -101,33 +101,33 @@ void DrawGame()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
+	//現在のビューポートを退避してレンダーターゲットを切り替え
 	D3DVIEWPORT9 oldVirwPort;
 	pDevice->GetViewport(&oldVirwPort);
 
+	//バックバッファを退避してレンダーターゲットを切り替え
 	LPDIRECT3DSURFACE9 oldSuf;
 	pDevice->GetRenderTarget(0, &oldSuf);
 	pDevice->SetRenderTarget(0, renderSurface);
 	pDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), 0, 1.0f, 0);
 
+	//オブジェクトを描画
 	SetCamera();
 
 	CountDebugTimer("Main", "DrawModel");
 	DrawModelController();
 	CountDebugTimer("Main", "DrawModel");
 
+	//ポストエフェクト反映
 	CountDebugTimer("Main", "DrawPostEffect");
 	PostEffectManager::Instance()->Draw();
 	CountDebugTimer("Main", "DrawPostEffect");
 
+	//結果をバックバッファへと描画
 	CountDebugTimer("Main", "DrawBackBuffer");
 	pDevice->SetViewport(&oldVirwPort);
 	pDevice->SetRenderTarget(0, oldSuf);
 	SAFE_RELEASE(oldSuf);
-
-	BeginDebugWindow("Game");
-	DebugDrawTexture(renderTexture, 300, 150);
-	EndDebugWindow("Game");
-
 
 	pDevice->SetTexture(0, renderTexture);
 	pDevice->SetStreamSource(0, screenVtx, 0, sizeof(VERTEX_2D));
