@@ -32,11 +32,11 @@ void BloomController::Update()
 {
 #ifdef BLOOM_USE_DEBUG
 	BeginDebugWindow("Bloom");
-	static float threthold = 0.25f;
+	static float threthold = BLOOM_THRETHOLD_DEFAULT;
 	DebugSliderFloat("Threthold", &threthold, 0.0f, 1.0f);
 	for (int i = 0; i < 3; i++)
 	{
-		DebugDrawTexture(blurTexture[i][0], 200.0f, 100.0f);
+		DebugDrawTexture(blurTexture[i][0], 100.0f, 50.0f);
 		DebugSameLine();
 	}
 	EndDebugWindow("Bloom");

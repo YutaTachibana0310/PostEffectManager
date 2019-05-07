@@ -126,6 +126,9 @@
     <ClCompile Include="Game.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="PostEffect\CrossFilterController.cpp">
+      <Filter>ソース ファイル\PostEffect\Controller</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -220,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="PostEffect\CrossFilterController.h">
+      <Filter>ヘッダー ファイル\PostEffect\Controller</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

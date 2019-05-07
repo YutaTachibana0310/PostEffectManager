@@ -38,6 +38,7 @@ private:
 	PostEffectManager& operator=(PostEffectManager &&) = delete;
 
 	bool useSceneBloom;
+	bool useCrossFilter;
 };
 
 

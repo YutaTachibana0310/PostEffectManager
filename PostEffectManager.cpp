@@ -9,6 +9,7 @@
 #include "PostEffect\/SpikeNoiseController.h"
 #include "PostEffect\ShockBlurController.h"
 #include "PostEffect\BloomController.h"
+#include "PostEffect\CrossFilterController.h"
 
 /**************************************
 マクロ定義
@@ -73,6 +74,9 @@ void PostEffectManager::Update()
 	//ブルーム使用切り替え
 	DebugChechBox("User Bloom", &useSceneBloom);
 
+	//クロスフィルタ使用切り替え
+	DebugChechBox("Use CrossFilter", &useCrossFilter);
+
 	//スパイクノイズセット
 	if(DebugButton("Set SpikeNoise"))
 		SpikeNoiseController::Instance()->SetNoise(2.0f, 20);
@@ -90,6 +94,9 @@ void PostEffectManager::Update()
 
 	if(useSceneBloom)
 		BloomController::Instance()->Update();
+
+	if (useCrossFilter)
+		CrossFilterController::Instance()->Update();
 }
 
 /**************************************
@@ -102,4 +109,7 @@ void PostEffectManager::Draw()
 
 	if(useSceneBloom)
 		BloomController::Instance()->Draw();
+
+	if (useCrossFilter)
+		CrossFilterController::Instance()->Draw();
 }

@@ -153,6 +153,7 @@
     <ClCompile Include="PostEffect\BloomController.cpp" />
     <ClCompile Include="PostEffect\BloomFilter.cpp" />
     <ClCompile Include="PostEffect\BlurFilter.cpp" />
+    <ClCompile Include="PostEffect\CrossFilterController.cpp" />
     <ClCompile Include="PostEffect\MonotoneFilter.cpp" />
     <ClCompile Include="PostEffect\ScreenObject.cpp" />
     <ClCompile Include="PostEffect\ShockBlur.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="PostEffect\BloomController.h" />
     <ClInclude Include="PostEffect\BloomFilter.h" />
     <ClInclude Include="PostEffect\BlurFilter.h" />
+    <ClInclude Include="PostEffect\CrossFilterController.h" />
     <ClInclude Include="PostEffect\MonotoneFilter.h" />
     <ClInclude Include="PostEffect\ScreenObject.h" />
     <ClInclude Include="PostEffect\ShockBlur.h" />
