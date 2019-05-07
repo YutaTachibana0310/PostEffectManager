@@ -5,14 +5,9 @@
 //
 //=============================================================================
 #include "main.h"
-#include "input.h"
-#include "light.h"
-#include "camera.h"
 #include <time.h>
+#include "Game.h"
 #include "debugWindow.h"
-#include "debugTimer.h"
-#include "ModelController.h"
-#include "PostEffectManager.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -39,32 +34,10 @@ void DrawDebugWindowMain(void);
 //*****************************************************************************
 LPDIRECT3D9			g_pD3D = NULL;			// Direct3D オブジェクト
 LPDIRECT3DDEVICE9	g_pD3DDevice = NULL;	// Deviceオブジェクト(描画に必要)
-//static D3DXCOLOR backColor = D3DCOLOR_RGBA(0, 0, 0, 0);
 static D3DXCOLOR backColor = D3DCOLOR_RGBA(0, 0, 0, 255);
 int					g_nCountFPS;			// FPSカウンタ
 bool				g_bDispDebug = true;	// デバッグ表示ON/OFF
 static bool flgPause = false;
-
-//現在のシーン
-
-static D3DVIEWPORT9 viewPort;
-
-//デフォルトビューポート
-static D3DVIEWPORT9 defaultViewPort = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 1.0f };
-
-//ポストエフェクトマネージャ
-PostEffectManager* PostEffectManager::instance = NULL;
-
-//描画用テクスチャ & サーフェイス
-static LPDIRECT3DTEXTURE9 texture;
-static LPDIRECT3DSURFACE9 surface;
-
-//Zマップ用テクスチャ & サーフェイス
-static LPDIRECT3DTEXTURE9 zMapTexture;
-static LPDIRECT3DSURFACE9 zMapSurface;
-
-//スクリーンオブジェクト
-static LPDIRECT3DVERTEXBUFFER9 vtxBuff;
 
 //=============================================================================
 // メイン関数
@@ -317,17 +290,6 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	ZeroMemory(&caps, sizeof(D3DCAPS9));
 	g_pD3DDevice->GetDeviceCaps(&caps);
 
-	//テクスチャ作成
-	g_pD3DDevice->CreateTexture(SCREEN_WIDTH,
-		SCREEN_HEIGHT,
-		1,
-		D3DUSAGE_RENDERTARGET,
-		D3DFMT_X8R8G8B8,
-		D3DPOOL_DEFAULT,
-		&texture,
-		0);
-	texture->GetSurfaceLevel(0, &surface);
-
 	//Zマップ作成
 	//g_pD3DDevice->CreateTexture(SCREEN_WIDTH,
 	//	SCREEN_HEIGHT,
@@ -340,59 +302,7 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//zMapTexture->GetSurfaceLevel(0, &zMapSurface);
 	//g_pD3DDevice->SetRenderTarget(1, zMapSurface);
 
-	//頂点バッファ作成
-	g_pD3DDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_2D,
-		D3DPOOL_MANAGED,
-		&vtxBuff,
-		0);
-
-	//頂点バッファ設定
-	VERTEX_2D *pVtx;
-	vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-	pVtx[0].vtx = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[1].vtx = D3DXVECTOR3(SCREEN_WIDTH, 0.0f, 0.0f);
-	pVtx[2].vtx = D3DXVECTOR3(0.0f, SCREEN_HEIGHT, 0.0f);
-	pVtx[3].vtx = D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
-
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-
-	pVtx[0].rhw =
-		pVtx[1].rhw =
-		pVtx[2].rhw =
-		pVtx[3].rhw = 1.0f;
-
-	pVtx[0].diffuse =
-		pVtx[1].diffuse =
-		pVtx[2].diffuse =
-		pVtx[3].diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-
-	vtxBuff->Unlock();
-
-	viewPort.Height = 2048;
-	viewPort.Width = 2048;
-	viewPort.MinZ = 0.0f;
-	viewPort.MaxZ = 1.0f;
-	viewPort.X = 0;
-	viewPort.Y = 0;
-
-	// 入力処理の初期化
-	InitInput(hInstance, hWnd);
-
-	// カメラの初期化
-	InitCamera();
-
-	InitLight();
-
-	InitDebugWindow(hWnd, g_pD3DDevice);
-
-	InitModelController(0);
-
-	RegisterDebugTimer("Main");
+	InitGame(hInstance, hWnd);
 
 	return S_OK;
 }
@@ -414,17 +324,7 @@ void Uninit(void)
 		g_pD3D = NULL;
 	}
 
-	// 入力処理の終了処理
-	UninitInput();
-
-	UninitLight();
-
-	UninitDebugWindow(0);
-
-	UninitDebugTimer();
-
-	UninitModelController(0);
-
+	UninitGame();
 }
 
 //=============================================================================
@@ -433,18 +333,7 @@ void Uninit(void)
 void Update(void)
 {
 	// 入力更新
-	UpdateDebugWindow();
-	UpdateInput();
-	UpdateLight();
-	UpdateCamera();
-
-	CountDebugTimer("Main", "UpdateModel");
-	UpdateModelController();
-	CountDebugTimer("Main", "UpdateModel");
-
-	CountDebugTimer("Main", "UpdatePostEffect");
-	PostEffectManager::Instance()->Update();
-	CountDebugTimer("Main", "UpdatePostEffect");
+	UpdateGame();
 }
 
 //=============================================================================
@@ -454,43 +343,9 @@ void Draw(void)
 {
 	if (SUCCEEDED(g_pD3DDevice->BeginScene()))
 	{
-		CountDebugTimer("Main", "DrawSetting");
-		D3DVIEWPORT9 oldViewPort;
-		g_pD3DDevice->GetViewport(&oldViewPort);
-		g_pD3DDevice->SetViewport(&viewPort);
-
-		LPDIRECT3DSURFACE9 oldSuf;
-		g_pD3DDevice->GetRenderTarget(0, &oldSuf);
-		g_pD3DDevice->SetRenderTarget(0, surface);
 		g_pD3DDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), backColor, 1.0f, 0);
 
-		SetCamera();
-		CountDebugTimer("Main", "DrawSetting");
-
-		CountDebugTimer("Main", "DrawModel");
-		DrawModelController();
-		CountDebugTimer("Main", "DrawModel");
-
-
-		CountDebugTimer("Main", "DrawPostEffect");
-		PostEffectManager::Instance()->Draw();
-		CountDebugTimer("Main", "DrawPostEffect");
-
-		CountDebugTimer("Main", "DrawBackBuffer");
-		g_pD3DDevice->SetViewport(&oldViewPort);
-		g_pD3DDevice->SetRenderTarget(0, oldSuf);
-		SAFE_RELEASE(oldSuf);
-
-		g_pD3DDevice->SetTexture(0, texture);
-		g_pD3DDevice->SetStreamSource(0, vtxBuff, 0, sizeof(VERTEX_2D));
-		g_pD3DDevice->SetFVF(FVF_VERTEX_2D);
-		g_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);
-		CountDebugTimer("Main", "DrawBackBuffer");
-
-		DrawDebugWindowMain();
-		DrawDebugTimer("Main");
-
-		DrawDebugWindow();
+		DrawGame();
 
 		g_pD3DDevice->EndScene();
 	}
@@ -594,5 +449,5 @@ int GetCurrentFPS(void)
 //=============================================================================
 LPDIRECT3DTEXTURE9 GetCurrentDrawData()
 {
-	return texture;
+	return GetDrawDataTemp();
 }
