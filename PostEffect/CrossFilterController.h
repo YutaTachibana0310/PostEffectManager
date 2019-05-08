@@ -10,7 +10,7 @@
 #include "../main.h"
 #include "../Framework/BaseSingleton.h"
 #include "BloomFilter.h"
-#include "BlurFilter.h"
+#include "CrossBlurFilter.h"
 
 /**************************************
 É}ÉNÉçíËã`
@@ -25,24 +25,21 @@ public:
 	friend class BaseSingleton<CrossFilterController>;
 
 	void Update();
-	void Draw();
+	void Draw(LPDIRECT3DTEXTURE9 targetTexture = NULL);
 
 private:
 	CrossFilterController();
 	~CrossFilterController();
 
-	void SampleBrightness();
-	void ProcessBlurRightCross();
-	void ProcessBlurLeftCross();
+	void SampleBrightness(LPDIRECT3DTEXTURE9 targetTexture);
+	void ProcessBlur(UINT pass);
 	void Blend();
 
 	BloomFilter *bloomFilter;
-	BlurFilter *blurFilter;
+	CrossBlurFilter *blurFilter;
 
-	LPDIRECT3DTEXTURE9 rightCrossTex[3][2];
-	LPDIRECT3DSURFACE9 rightCrossSuf[3][2];
-	LPDIRECT3DTEXTURE9 leftCrossTex[3][2];
-	LPDIRECT3DSURFACE9 leftCrossSuf[3][2];
+	LPDIRECT3DTEXTURE9 blurTexture[3][2];
+	LPDIRECT3DSURFACE9 blurSurface[3][2];
 
 	D3DVIEWPORT9 blurViewPort[3];
 	D3DVIEWPORT9 oldViewPort;

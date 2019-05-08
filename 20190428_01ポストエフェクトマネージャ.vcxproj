@@ -149,10 +149,12 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelController.cpp" />
     <ClCompile Include="MyLibrary.cpp" />
+    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="PostEffectManager.cpp" />
     <ClCompile Include="PostEffect\BloomController.cpp" />
     <ClCompile Include="PostEffect\BloomFilter.cpp" />
     <ClCompile Include="PostEffect\BlurFilter.cpp" />
+    <ClCompile Include="PostEffect\CrossBlurFilter.cpp" />
     <ClCompile Include="PostEffect\CrossFilterController.cpp" />
     <ClCompile Include="PostEffect\MonotoneFilter.cpp" />
     <ClCompile Include="PostEffect\ScreenObject.cpp" />
@@ -183,10 +185,12 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="ModelController.h" />
     <ClInclude Include="MyLibrary.h" />
+    <ClInclude Include="Particle.h" />
     <ClInclude Include="PostEffectManager.h" />
     <ClInclude Include="PostEffect\BloomController.h" />
     <ClInclude Include="PostEffect\BloomFilter.h" />
     <ClInclude Include="PostEffect\BlurFilter.h" />
+    <ClInclude Include="PostEffect\CrossBlurFilter.h" />
     <ClInclude Include="PostEffect\CrossFilterController.h" />
     <ClInclude Include="PostEffect\MonotoneFilter.h" />
     <ClInclude Include="PostEffect\ScreenObject.h" />
@@ -197,6 +201,10 @@
     <ClInclude Include="PostEffect\StrongBlurFilter.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="data\EFFECT\particle.fx">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">2.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="PostEffect\BloomFilter.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">2.0</ShaderModel>
@@ -212,6 +220,10 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">2.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">2.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="PostEffect\CrossBlur.fx">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">2.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="PostEffect\MonotoneFilter.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>

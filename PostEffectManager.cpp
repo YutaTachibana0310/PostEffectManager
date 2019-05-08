@@ -52,7 +52,8 @@ void PostEffectManager::Destroy()
 ***************************************/
 PostEffectManager::PostEffectManager()
 {
-
+	useSceneBloom = true;
+	useCrossFilter = false;
 }
 
 /**************************************

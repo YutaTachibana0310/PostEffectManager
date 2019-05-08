@@ -11,6 +11,7 @@
 #include "debugTimer.h"
 #include "ModelController.h"
 #include "PostEffectManager.h"
+#include "Particle.h"
 
 /**************************************
 マクロ定義
@@ -57,6 +58,7 @@ void InitGame(HINSTANCE hInstance, HWND hWnd)
 	InitLight();
 	InitDebugWindow(hWnd, pDevice);
 	InitModelController(0);
+	InitParticle();
 
 	RegisterDebugTimer("Main");
 }
@@ -71,6 +73,7 @@ void UninitGame()
 	UninitDebugWindow(0);
 	UninitDebugTimer();
 	UninitModelController(0);
+	UninitParticle();
 
 	PostEffectManager::Destroy();
 }
@@ -88,6 +91,10 @@ void UpdateGame()
 	CountDebugTimer("Main", "UpdateModel");
 	UpdateModelController();
 	CountDebugTimer("Main", "UpdateModel");
+
+	CountDebugTimer("Main", "UpdateParticle");
+	UpdateParticle();
+	CountDebugTimer("Main", "UpdateParticle");
 
 	CountDebugTimer("Main", "UpdatePostEffect");
 	PostEffectManager::Instance()->Update();
@@ -117,6 +124,10 @@ void DrawGame()
 	CountDebugTimer("Main", "DrawModel");
 	DrawModelController();
 	CountDebugTimer("Main", "DrawModel");
+
+	CountDebugTimer("Main", "DrawParticle");
+	DrawParticle();
+	CountDebugTimer("Main", "DrawParticle");
 
 	//ポストエフェクト反映
 	CountDebugTimer("Main", "DrawPostEffect");
