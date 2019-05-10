@@ -32,12 +32,6 @@ VS_OUTPUT VS(
 *********************************************/
 float4 GetPixelColor(float2 texel[6])
 {
-	//float4 p0 = tex2D(s0, texel[0]) * 0.19f;
-	//float4 p1 = tex2D(s0, texel[1]) * 0.17f;
-	//float4 p2 = tex2D(s0, texel[2]) * 0.15f;
-	//float4 p3 = tex2D(s0, texel[3]) * 0.13f;
-	//float4 p4 = tex2D(s0, texel[4]) * 0.11f;
-
 	float4 p0 = tex2D(s0, texel[0]) * 0.40f;
 	float4 p1 = tex2D(s0, texel[1]) * 0.18f;
 	float4 p2 = tex2D(s0, texel[2]) * 0.15f;

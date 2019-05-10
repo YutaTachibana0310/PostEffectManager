@@ -76,7 +76,7 @@ void PostEffectManager::Update()
 	DebugChechBox("User Bloom", &useSceneBloom);
 
 	//クロスフィルタ使用切り替え
-	DebugChechBox("Use CrossFilter", &useCrossFilter);
+	DebugChechBox("Use SceneCrossFilter", &useCrossFilter);
 
 	//スパイクノイズセット
 	if(DebugButton("Set SpikeNoise"))

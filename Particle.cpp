@@ -78,7 +78,7 @@ void InitParticle(void)
 	pDevice->CreateVertexBuffer(sizeof(vtx), 0, 0, D3DPOOL_MANAGED, &vtxBuff, 0);
 	pDevice->CreateVertexBuffer(sizeof(Transform) * PARTICLE_NUM, 0, 0, D3DPOOL_MANAGED, &worldBuff, 0);
 	pDevice->CreateVertexBuffer(sizeof(ParticleTex) * PARTICLE_NUM, 0, 0, D3DPOOL_MANAGED, &uvBuff, 0);
-	
+
 	//単位頂点の中身を埋める
 	ParticleVertex *pVtx;
 	vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -139,7 +139,7 @@ void InitParticle(void)
 		D3DUSAGE_RENDERTARGET,
 		D3DFMT_X8R8G8B8,
 		D3DPOOL_DEFAULT,
-		&renderTexture, 
+		&renderTexture,
 		0);
 	renderTexture->GetSurfaceLevel(0, &renderSurface);
 
@@ -189,6 +189,11 @@ void UpdateParticle(void)
 *************************************/
 void DrawParticle(void)
 {
+	BeginDebugWindow("PostEffect");
+	static bool useCrossFilter = true;
+	DebugChechBox("Use CrossFilter", &useCrossFilter);
+	EndDebugWindow("PostEffect");
+
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	pDevice->SetRenderState(D3DRS_LIGHTING, false);
@@ -196,23 +201,21 @@ void DrawParticle(void)
 
 	DrawColorAndBloom();
 
-	LPDIRECT3DSURFACE9 oldSuf;
-	pDevice->GetRenderTarget(0, &oldSuf);
-
-	pDevice->SetRenderTarget(0, renderSurface);
-	pDevice->Clear(0, 0, D3DCLEAR_TARGET, 0, 0, 0);
-
-	//インスタンシング描画
-	//if (useEffect)
+	if (useCrossFilter)
 	{
+		LPDIRECT3DSURFACE9 oldSuf;
+		pDevice->GetRenderTarget(0, &oldSuf);
+
+		pDevice->SetRenderTarget(0, renderSurface);
+		pDevice->Clear(0, 0, D3DCLEAR_TARGET, 0, 0, 0);
+
 		DrawColorAndBloom();	//ここが一番重要
+
+		pDevice->SetRenderTarget(0, oldSuf);
+		SAFE_RELEASE(oldSuf);
+
+		CrossFilterController::Instance()->Draw(renderTexture);
 	}
-
-	pDevice->SetRenderTarget(0, oldSuf);
-	SAFE_RELEASE(oldSuf);
-
-	CrossFilterController::Instance()->Draw(renderTexture);
-
 
 	pDevice->SetRenderState(D3DRS_LIGHTING, true);
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, true);

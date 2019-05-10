@@ -265,5 +265,8 @@
     <FxCompile Include="data\EFFECT\particle.fx">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="PostEffect\HexaCrossBlur.fx">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
