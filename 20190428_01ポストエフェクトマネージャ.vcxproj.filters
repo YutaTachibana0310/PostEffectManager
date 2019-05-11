@@ -126,6 +126,15 @@
     <ClCompile Include="Game.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="PostEffect\CrossFilterController.cpp">
+      <Filter>ソース ファイル\PostEffect\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="PostEffect\CrossBlurFilter.cpp">
+      <Filter>ソース ファイル\PostEffect\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -221,6 +230,15 @@
     <ClInclude Include="Game.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="PostEffect\CrossFilterController.h">
+      <Filter>ヘッダー ファイル\PostEffect\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="PostEffect\CrossBlurFilter.h">
+      <Filter>ヘッダー ファイル\PostEffect\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PostEffect\MonotoneFilter.fx">
@@ -239,6 +257,15 @@
       <Filter>リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="PostEffect\StrongBlurFilter.fx">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="PostEffect\CrossBlur.fx">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="data\EFFECT\particle.fx">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="PostEffect\HexaCrossBlur.fx">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>
