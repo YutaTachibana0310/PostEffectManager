@@ -5,6 +5,7 @@
 //
 //=====================================
 #include "ModelController.h"
+#include "Framework\MeshContainer.h"
 
 /**************************************
 マクロ定義
@@ -17,9 +18,8 @@
 /**************************************
 グローバル変数
 ***************************************/
-static LPD3DXMESH mesh[3];
-static LPD3DXBUFFER bufMat[3];
-static DWORD matNum[3];
+MeshContainer *container[3];
+
 
 static const char* modelName[3] =
 {
@@ -49,7 +49,8 @@ void InitModelController(int num)
 
 	for (int i = 0; i < 3; i++)
 	{
-		D3DXLoadMeshFromX(modelName[i], D3DXMESH_SYSTEMMEM, pDevice, NULL, &bufMat[i], NULL, &matNum[i], &mesh[i]);
+		container[i] = new MeshContainer();
+		container[i]->Load((LPSTR)modelName[i]);
 	}
 
 	const float offset = 100.0f;
@@ -71,8 +72,7 @@ void UninitModelController(int num)
 {
 	for (int i = 0; i < 3; i++)
 	{
-		SAFE_RELEASE(mesh[i]);
-		SAFE_RELEASE(bufMat[i]);
+		delete container[i];
 	}
 }
 
@@ -112,13 +112,7 @@ void DrawModelController(void)
 
 			pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 
-			pMaterial = (D3DXMATERIAL*)bufMat[i]->GetBufferPointer();
-
-			for (UINT j = 0; j < matNum[i]; j++)
-			{
-				pDevice->SetMaterial(&pMaterial[j].MatD3D);
-				mesh[i]->DrawSubset(j);
-			}
+			container[i]->Draw();
 		}
 	}
 

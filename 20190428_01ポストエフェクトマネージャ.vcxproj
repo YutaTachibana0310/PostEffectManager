@@ -137,6 +137,7 @@
     <ClCompile Include="debugWindow.cpp" />
     <ClCompile Include="Framework\Easing.cpp" />
     <ClCompile Include="Framework\EasingVector.cpp" />
+    <ClCompile Include="Framework\MeshContainer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="Framework\BaseSingleton.h" />
     <ClInclude Include="Framework\Easing.h" />
     <ClInclude Include="Framework\EasingVector.h" />
+    <ClInclude Include="Framework\MeshContainer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
