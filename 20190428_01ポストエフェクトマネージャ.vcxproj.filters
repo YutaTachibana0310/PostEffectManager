@@ -268,5 +268,8 @@
     <FxCompile Include="PostEffect\HexaCrossBlur.fx">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="Framework\LambertLight.fx">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
