@@ -5,6 +5,7 @@
 //
 //=====================================
 #include "MeshContainer.h"
+#include <stdio.h>
 
 /**************************************
 マクロ定義
@@ -32,12 +33,17 @@ MeshContainer::MeshContainer()
 MeshContainer::~MeshContainer()
 {
 	SAFE_RELEASE(mesh);
+
+	for (DWORD i = 0; i < materialNum; i++)
+	{
+		SAFE_RELEASE(textures[i]);
+	}
 }
 
 /**************************************
 ファイル読み込み処理
 ***************************************/
-HRESULT MeshContainer::Load(LPSTR filePath)
+HRESULT MeshContainer::Load(const char* filePath)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	LPD3DXBUFFER tmpMaterial;
@@ -67,6 +73,43 @@ HRESULT MeshContainer::Load(LPSTR filePath)
 	}
 
 	//テクスチャ読み込み
+	textures = (LPDIRECT3DTEXTURE9*)malloc(sizeof(LPDIRECT3DTEXTURE9) * materialNum);
+	ZeroMemory(textures, sizeof(LPDIRECT3DTEXTURE9) * materialNum);
+	char directoryPath[_MAX_DIR];
+	size_t length = strlen(filePath);
+
+	for (DWORD i = length - 1; i >= 0; i--)
+	{
+		if (filePath[i] == '/')
+		{
+			strncpy(directoryPath, filePath, i + 1);
+			directoryPath[i + 1] = '\0';
+			break;
+		}
+	}
+
+	for (DWORD i = 0; i < materialNum; i++)
+	{
+		if (matBuffer[i].pTextureFilename == NULL)
+			continue;
+
+		//テクスチャ名をwcharに変換
+		char fileName[1024];
+		size_t num;
+		ZeroMemory(fileName, sizeof(fileName));
+		strcpy(fileName, matBuffer[i].pTextureFilename);
+
+		//テクスチャファイルパスを作成
+		char textureFile[1024];
+		ZeroMemory(textureFile, sizeof(textureFile));
+		strcat(textureFile, directoryPath);
+		strcat(textureFile, fileName);
+
+		//ロード
+		D3DXCreateTextureFromFile(pDevice, (LPSTR)textureFile, &textures[i]);
+	}
+
+	SAFE_RELEASE(tmpMaterial);
 
 	return res;
 }
@@ -85,6 +128,7 @@ void MeshContainer::Draw()
 	for (DWORD i = 0; i < materialNum; i++)
 	{
 		//テクスチャの設定
+		pDevice->SetTexture(0, textures[i]);
 
 		//マテリアル設定
 		pDevice->SetMaterial(&materials[i]);

@@ -83,6 +83,8 @@ void UninitGame()
 ***************************************/
 void UpdateGame()
 {
+	CountDebugTimer("Game", "Update");
+
 	UpdateDebugWindow();
 	UpdateInput();
 	UpdateLight();
@@ -99,6 +101,8 @@ void UpdateGame()
 	CountDebugTimer("Main", "UpdatePostEffect");
 	PostEffectManager::Instance()->Update();
 	CountDebugTimer("Main", "UpdatePostEffect");
+
+	CountDebugTimer("Game", "Update");
 }
 
 /**************************************
@@ -106,6 +110,7 @@ void UpdateGame()
 ***************************************/
 void DrawGame()
 {
+	CountDebugTimer("Game", "Draw");
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	//現在のビューポートを退避してレンダーターゲットを切り替え
@@ -146,8 +151,10 @@ void DrawGame()
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);
 	CountDebugTimer("Main", "DrawBackBuffer");
 
-	DrawDebugTimer("Main");
+	CountDebugTimer("Game", "Draw");
 
+	DrawDebugTimer("Main");
+	DrawDebugTimer("Game");
 	DrawDebugWindow();
 }
 

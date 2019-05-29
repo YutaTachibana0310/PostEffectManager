@@ -22,7 +22,7 @@ public:
 	MeshContainer();
 	~MeshContainer();
 
-	HRESULT Load(LPSTR filePath);
+	HRESULT Load(const char* filePath);
 	void Draw();
 
 private:
