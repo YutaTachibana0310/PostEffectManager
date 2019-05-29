@@ -25,10 +25,10 @@ public:
 		return &mInstance;
 	}
 
-	static void Destroy()
-	{
-		delete mInstance;
-	}
+	//static void Destroy()
+	//{
+	//	delete mInstance;
+	//}
 
 protected:
 	BaseSingleton() {}
